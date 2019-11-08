@@ -377,3 +377,84 @@ svg.node();
   </body>
 </html>
 --------------------------------다섯번째 시각화---------------------------------------
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Sample</title>
+		<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+		<style>
+			svg { width: 600px; height: 600px; border: 1px solid black; }
+			circle { stroke: none; opacity : 0.5; }
+			text { font-size: 10pt; text-anchor: middle; fill: black; font-weight: bolder; opacity: 0; }
+		</style>
+	</head>
+	<body>
+		<svg id="myGraph"></svg>
+		<script>
+    var svgWidth = 600;	// SVG요소의 넓이
+    var svgHeight = 600;	// SVG요소의 높이
+    // 데이터셋
+    var dataSet = {
+      name : "전국", value : 51607,
+      children : [
+        { name : "강원", value : 1521 },
+        { name : "경기", value : 13031 },
+        { name : "경남", value : 3356 },
+        { name : "경북", value : 2674 },
+				{ name : "광주", value : 1493 },
+				{ name : "대구", value : 2450 },
+				{ name : "대전", value : 1518},
+				{ name : "부산", value : 3400},
+				{ name : "서울", value : 9705 },
+				{ name : "세종", value : 304},
+				{ name : "울산", value : 1154 },
+				{ name : "인천", value : 2939},
+				{ name : "전남", value : 1790 },
+				{ name : "전북", value : 1820 },
+				{ name : "제주", value : 653},
+				{ name : "충남", value : 2180 },
+				{ name : "충북", value : 1619},
+      ]
+    }
+    // 색을 준비
+    var color = d3.scale.category10();  // 10색을 지정
+    // 팩 레이아웃
+    var bubble = d3.layout.pack()
+      .size([600, 600])	// 표시 크기 지정
+    // 팩 레이아웃으로 사용할 크룹을 작성
+    var pack = d3.select("#myGraph")
+      .selectAll("g")
+      .data(bubble.nodes(dataSet))	// 데이터셋을 요소에 설정
+      .enter()
+      .append("g")
+      .attr("transform", function(d, i){
+        return "translate(" + d.x + "," + d.y + ")";	// X, Y 좌표 설정
+      })
+    // 원 생성
+    pack.append("circle")	// circle 요소를 추가
+      .attr("r", 0)	// 최초 반지름은 0으로 함
+      .transition()
+      .attr("r", function(d){	// 반지름 지정
+        return d.r;
+      })
+      .style("fill", function(d, i){
+        return color(i);
+      })
+    // 원에 표시할 문자 생성
+    pack.append("text")
+      .transition()
+      .style("opacity", 1.0)	// 불투명으로 함
+      .text(function(d, i){
+        if (d.depth == 1){	// 제1계층(도도부현)의 대상
+          return [d.name, (d.value/51607*100).toFixed(0) + '%'];	// name 속성의 내용을 반환
+        }
+        return null;	// 제1계층 이외는 표시하지 않음
+      })
+
+
+
+    </script>
+	</body>
+</html>
+
